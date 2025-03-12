@@ -72,10 +72,22 @@ const deletePhoto = async (req, res) => {
 
 const updatePhoto = async (req, res) => {
   try {
+    console.log("req", req);
     const { title, description, category } = req.body;
     const photo = await Photo.findById(req.params.id);
     if (!photo) {
       return sendResponse(res, 404, "Photo not found");
+    }
+
+    if (req.file) {
+      await cloudinary.uploader.destroy(photo.publicId);
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "frames-by-ashwn",
+        use_filename: true,
+      });
+
+      photo.imageUrl = result.secure_url;
+      photo.publicId = result.public_id;
     }
 
     photo.title = title || photo.title;
