@@ -1,7 +1,8 @@
 const { sendResponse } = require("../utils/sendResponse");
 const jwt = require("jsonwebtoken");
+const Admin = require("../models/adminModel");
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -20,11 +21,13 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const admin = await Admin.findById(decoded.id).select("-password");
 
-    if (decoded.role !== "admin") {
-      return sendResponse(res, 401, "Unauthorized: Admin access only");
+    if (!admin) {
+      return sendResponse(res, 401, "Unauthorized: Admin not found");
     }
 
+    req.user = admin; // Attach admin details to request object
     next();
   } catch (error) {
     console.log(error);
