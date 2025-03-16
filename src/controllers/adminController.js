@@ -9,7 +9,7 @@ const { sendResponse } = require("../utils/sendResponse");
 const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+console.log('req.body', req.body)
     if (!email || !password) {
       return sendResponse(res, 400, "Email and password are required");
     }

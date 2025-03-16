@@ -62,6 +62,7 @@ const getPhotoById = async (req, res) => {
     if (!photo) {
       return sendResponse(res, 404, "Photo not found");
     }
+    console.log("photo from get by id response", photo);
     sendResponse(res, 200, "Photo fetched", { photo });
   } catch (error) {
     sendResponse(res, 500, "Error fetching photo", { error: error.message });
