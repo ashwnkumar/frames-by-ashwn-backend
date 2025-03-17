@@ -8,6 +8,7 @@ const cors = require("cors");
 
 const adminRouter = require("./src/routes/adminRouter");
 const photoRouter = require("./src/routes/photoRouter");
+const nodemailerRouter = require("./src/routes/nodemailerRouter");
 
 connectDb();
 
@@ -17,8 +18,9 @@ const port = envConfig.port;
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/admin", adminRouter); // Use adminRouter for /api/admin path
-app.use("/api/photos", photoRouter); // Use photoRouter for /api/photos path
+app.use("/api/admin", adminRouter);
+app.use("/api/photos", photoRouter);
+app.use("/api/send-email", nodemailerRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

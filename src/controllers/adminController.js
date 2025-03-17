@@ -61,8 +61,6 @@ const loginAdmin = async (req, res) => {
 
 const getAdminDetails = async (req, res) => {
   try {
-    console.log("req from getAdminDetails", req.user);
-
     const admin = await Admin.findOne().select("-password");
 
     if (!admin) {
@@ -81,32 +79,81 @@ const updateAdmin = async (req, res) => {
     const { name, email, aboutText } = req.body;
 
     const admin = await Admin.findById(req.user.id);
-    if (!admin) return sendResponse(res, 400, "Admin already exists");
+    if (!admin) return sendResponse(res, 400, "Admin does not exist");
 
     admin.name = name || admin.name;
     admin.email = email || admin.email;
     admin.aboutText = aboutText || admin.aboutText;
 
+    console.log("req.files from update call", req.files);
+
+    // Function to extract public ID from Cloudinary URL
+    const getPublicId = (url) => {
+      if (!url) return null;
+      const parts = url.split("/");
+      return parts[parts.length - 1].split(".")[0]; // Extract ID from URL
+    };
+
     if (req.files?.profileUrl) {
-      const response = await cloudinary.uploader.upload(
-        req.files.profileUrl[0].path,
-        {
-          folder: "frames-by-ashwn/admin",
-          use_filename: true,
+      try {
+        // Delete existing profileUrl from Cloudinary if present
+        if (admin.profileUrl) {
+          const publicId = getPublicId(admin.profileUrl);
+          if (publicId)
+            await cloudinary.uploader.destroy(
+              `frames-by-ashwn/admin/${publicId}`
+            );
         }
-      );
-      admin.profileUrl = response.secure_url || admin.profileUrl;
+
+        // Upload new profile image
+        const response = await cloudinary.uploader.upload(
+          req.files.profileUrl[0].path,
+          {
+            folder: "frames-by-ashwn/admin",
+            use_filename: true,
+          }
+        );
+
+        admin.profileUrl = response.secure_url;
+      } catch (error) {
+        return sendResponse(
+          res,
+          500,
+          "Error uploading profile image",
+          error.message
+        );
+      }
     }
 
     if (req.files?.landingPageUrl) {
-      const response = await cloudinary.uploader.upload(
-        req.files.landingPageUrl[0].path,
-        {
-          folder: "frames-by-ashwn/admin",
-          use_filename: true,
+      try {
+        // Delete existing landingPageUrl from Cloudinary if present
+        if (admin.landingPageUrl) {
+          const publicId = getPublicId(admin.landingPageUrl);
+          if (publicId)
+            await cloudinary.uploader.destroy(
+              `frames-by-ashwn/admin/${publicId}`
+            );
         }
-      );
-      admin.landingPageUrl = response.secure_url || admin.landingPageUrl;
+
+        // Upload new landing page image
+        const response = await cloudinary.uploader.upload(
+          req.files.landingPageUrl[0].path,
+          {
+            folder: "frames-by-ashwn/admin",
+            use_filename: true,
+          }
+        );
+
+        admin.landingPageUrl = response.secure_url;
+      } catch (error) {
+        return sendResponse(
+          res,
+          500,
+          "Error uploading landing page image",
+          error.message
+        );
+      }
     }
 
     await admin.save();

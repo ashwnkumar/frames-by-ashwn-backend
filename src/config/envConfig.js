@@ -6,8 +6,10 @@ const envConfig = {
   cloudinaryCloudName: String(process.env.CLOUDINARY_CLOUD_NAME),
   cloudinaryApiKey: String(process.env.CLOUDINARY_API_KEY),
   cloudinaryApiSecret: String(process.env.CLOUDINARY_API_SECRET),
-  adminEmail: String(process.env.ADMIN_EMAIL),
-  adminPassword: String(process.env.ADMIN_PASSWORD),
+  nodemailerSenderEmail: String(process.env.NODEMAILER_SENDER_EMAIL),
+  smtpHost: String(process.env.SMTP_HOST),
+  smtpService: String(process.env.SMTP_SERVICE),
+  googleAppPassword: String(process.env.GOOGLE_APP_PASSWORD),
 };
 
 module.exports = { envConfig };
