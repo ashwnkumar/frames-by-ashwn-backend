@@ -13,7 +13,7 @@ const nodemailerRouter = require("./src/routes/nodemailerRouter");
 connectDb();
 
 const app = express();
-const port = envConfig.port;
+const port = envConfig.port || 4000;
 
 app.use(cors());
 app.use(express.json());

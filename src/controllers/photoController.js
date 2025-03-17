@@ -9,6 +9,11 @@ const uploadPhoto = async (req, res) => {
     if (!req.file) {
       return sendResponse(res, 400, "Photo is required");
     }
+
+    if (req.file.size > 10 * 1024 * 1024) {
+      return sendResponse(res, 400, "Image size must be lower than 10MB");
+    }
+
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: "frames-by-ashwn",
       use_filename: true,
@@ -62,7 +67,7 @@ const getPhotos = async (req, res) => {
     const totalPhotos = await Photo.countDocuments();
     const hasMore = skip + photos.length < totalPhotos;
 
-    sendResponse(res, 200, "Photos fetched", { photos, hasMore });
+    sendResponse(res, 200, "Photos fetched", { photos, hasMore, totalPhotos });
   } catch (error) {
     sendResponse(res, 500, "Error fetching photos", { error: error.message });
     console.error("Error fetching photos", error);
