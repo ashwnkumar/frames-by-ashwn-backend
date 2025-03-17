@@ -5,7 +5,6 @@ const { sendResponse } = require("../utils/sendResponse");
 const uploadPhoto = async (req, res) => {
   try {
     const { title, description, album } = req.body;
-    console.log("req.file from add", req.file);
 
     if (!req.file) {
       return sendResponse(res, 400, "Photo is required");
@@ -48,8 +47,22 @@ const uploadPhoto = async (req, res) => {
 
 const getPhotos = async (req, res) => {
   try {
-    const photo = await Photo.find().sort({ createdAt: -1 });
-    sendResponse(res, 200, "Photos fetched", { photos: photo });
+    let { page, limit } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 7;
+
+    const skip = (page - 1) * limit;
+
+    const photos = await Photo.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalPhotos = await Photo.countDocuments();
+    const hasMore = skip + photos.length < totalPhotos;
+
+    sendResponse(res, 200, "Photos fetched", { photos, hasMore });
   } catch (error) {
     sendResponse(res, 500, "Error fetching photos", { error: error.message });
     console.error("Error fetching photos", error);

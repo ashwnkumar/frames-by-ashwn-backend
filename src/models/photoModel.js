@@ -2,7 +2,7 @@ const { default: mongoose } = require("mongoose");
 
 const photoSchema = mongoose.Schema(
   {
-    title: { type: String, required: true },
+    title: { type: String },
     imageUrl: { type: String, required: true },
     description: { type: String },
     category: { type: String },

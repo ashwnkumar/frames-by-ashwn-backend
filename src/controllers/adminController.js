@@ -85,7 +85,7 @@ const updateAdmin = async (req, res) => {
     admin.email = email || admin.email;
     admin.aboutText = aboutText || admin.aboutText;
 
-    console.log("req.files from update call", req.files);
+ 
 
     // Function to extract public ID from Cloudinary URL
     const getPublicId = (url) => {
