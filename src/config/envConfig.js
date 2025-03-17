@@ -10,6 +10,8 @@ const envConfig = {
   smtpHost: String(process.env.SMTP_HOST),
   smtpService: String(process.env.SMTP_SERVICE),
   googleAppPassword: String(process.env.GOOGLE_APP_PASSWORD),
+  frontendUrl: String(process.env.FRONTEND_URL),
+  allowedOrigins: String(process.env.ALLOWED_ORIGINS),
 };
 
 module.exports = { envConfig };

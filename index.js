@@ -9,13 +9,14 @@ const cors = require("cors");
 const adminRouter = require("./src/routes/adminRouter");
 const photoRouter = require("./src/routes/photoRouter");
 const nodemailerRouter = require("./src/routes/nodemailerRouter");
+const { corsOptions } = require("./src/config/corsConfig");
 
 connectDb();
 
 const app = express();
 const port = envConfig.port || 4000;
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use("/api/admin", adminRouter);
