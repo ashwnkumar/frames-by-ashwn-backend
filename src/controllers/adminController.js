@@ -25,7 +25,7 @@ const registerAdmin = async (req, res) => {
     const newAdmin = new Admin({ name, email, password: hashedPassword });
     await newAdmin.save();
 
-    sendResponse(res, 201, "Admin registered successfully");
+   return sendResponse(res, 201, "Admin registered successfully");
   } catch (error) {
     console.error("Error registering admin", error);
     sendResponse(res, 500, "Server error", error.message);
@@ -39,13 +39,13 @@ const loginAdmin = async (req, res) => {
     // Check if admin exists
     const admin = await Admin.findOne({ email });
     if (!admin) {
-      sendResponse(res, 404, "Admin not found");
+    return sendResponse(res, 404, "Admin not found");
     }
 
     // Compare password
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      sendResponse(res, 401, "Incorrect password");
+    return  sendResponse(res, 401, "Incorrect password");
     }
 
     // Generate JWT
@@ -53,7 +53,7 @@ const loginAdmin = async (req, res) => {
       expiresIn: "7d",
     });
 
-    sendResponse(res, 200, "Admin logged in successfully", { token });
+  return  sendResponse(res, 200, "Admin logged in successfully", { token });
   } catch (error) {
     sendResponse(res, 500, "Server error", error.message);
   }
@@ -67,7 +67,7 @@ const getAdminDetails = async (req, res) => {
       return sendResponse(res, 404, "Admin not found"); // Added return to stop execution
     }
 
-    sendResponse(res, 200, "Admin details fetched successfully", { admin });
+  return  sendResponse(res, 200, "Admin details fetched successfully", { admin });
   } catch (error) {
     console.error("Error fetching admin details", error);
     sendResponse(res, 500, "Server error", error.message);
@@ -172,7 +172,7 @@ const updateAdminPassword = async (req, res) => {
     // Find admin
     const admin = await Admin.findById(req.user.id);
     if (!admin) {
-      sendResponse(res, 404, "Admin not found");
+   return   sendResponse(res, 404, "Admin not found");
     }
 
     // Check current password
@@ -188,7 +188,7 @@ const updateAdminPassword = async (req, res) => {
     admin.password = hashedPassword;
     await admin.save();
 
-    sendResponse(res, 200, "Password updated successfully");
+  return  sendResponse(res, 200, "Password updated successfully");
   } catch (error) {
     sendResponse(res, 500, "Server error", error.message);
     console.error("Server error", error);
