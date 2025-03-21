@@ -105,6 +105,23 @@ const deletePhoto = async (req, res) => {
   }
 };
 
+const deleteAllPhotos = async (req, res) => {
+  try {
+    const photos = await Photo.find({});
+    if (photos.length === 0) {
+      return sendResponse(res, 404, "No photos found");
+    }
+    
+    await Promise.all(photos.map(photo => cloudinary.uploader.destroy(photo.publicId)));
+    await Photo.deleteMany({});
+
+    sendResponse(res, 200, "All photos deleted successfully");
+  } catch (error) {
+    sendResponse(res, 500, "Error deleting photos", { error: error.message });
+    console.error("Error deleting photos", error);
+  }
+};
+
 const updatePhoto = async (req, res) => {
   try {
     console.log("req from update", req.body);
