@@ -5,6 +5,7 @@ const {
   getPhotoById,
   deletePhoto,
   updatePhoto,
+  deleteAllPhotos,
 } = require("../controllers/photoController");
 const upload = require("../config/multerConfig"); // Import multer configuration
 const { authMiddleware } = require("../middlewares/authMiddleware");
@@ -20,6 +21,7 @@ photoRouter.post(
 photoRouter.get("/", getPhotos);
 photoRouter.get("/:id", getPhotoById);
 photoRouter.delete("/:id", authMiddleware, deletePhoto);
+photoRouter.delete("/", authMiddleware, deleteAllPhotos);
 photoRouter.put("/:id", authMiddleware, upload.single("photo"), updatePhoto);
 
 module.exports = photoRouter;
