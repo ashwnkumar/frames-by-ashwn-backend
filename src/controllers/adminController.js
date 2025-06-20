@@ -36,6 +36,8 @@ const loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    
+
     // Check if admin exists
     const admin = await Admin.findOne({ email });
     if (!admin) {
@@ -84,8 +86,6 @@ const updateAdmin = async (req, res) => {
     admin.name = name || admin.name;
     admin.email = email || admin.email;
     admin.aboutText = aboutText || admin.aboutText;
-
- 
 
     // Function to extract public ID from Cloudinary URL
     const getPublicId = (url) => {

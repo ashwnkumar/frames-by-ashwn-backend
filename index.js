@@ -24,5 +24,5 @@ app.use("/api/photos", photoRouter);
 app.use("/api/send-email", nodemailerRouter);
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port http://localhost:${port}`);
 });
